@@ -1,5 +1,4 @@
-# 🚀 Chronioñ Browser v1.0
-
+# 🚀 Chronioñ Browser
 ¡Bienvenido a **Chronioñ**, un navegador web ultra ligero, minimalista y rápido desarrollado completamente en Python! 
 
 Chronioñ está diseñado para ser portable: no necesita instaladores complejos, es solo un archivo ejecutable `.exe` listo para correr de forma nativa en Windows. Su motor gráfico utiliza la tecnología de Google Chrome (Blink) gracias a las librerías de PyQt5.
