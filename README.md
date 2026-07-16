@@ -1,55 +1,50 @@
 # 🚀 Chronioñ Browser
+
 ¡Bienvenido a **Chronioñ**, un navegador web ultra ligero, minimalista y rápido desarrollado completamente en Python! 
 
-Chronioñ está diseñado para ser portable: no necesita instaladores complejos, es solo un archivo ejecutable `.exe` listo para correr de forma nativa en Windows. Su motor gráfico utiliza la tecnología de Google Chrome (Blink) gracias a las librerías de PyQt5.
+Chronioñ está diseñado para ser portable y directo. En este repositorio encontrarás la versión **Chronioñ Demo**, la cual inicia de forma limpia cargando el buscador oficial de Google y cuenta con un motor inteligente para resolver búsquedas directamente desde la barra superior.
 
 ---
 
-## 🎨 Características principales
-* 🏎️ **Ultra ligero:** Corre directamente desde un archivo único en tu escritorio.
-* 🛡️ **Portable:** Llévalo en tu pendrive o pásalo por Discord/WhatsApp a tus amigos sin instalar dependencias.
-* 🌐 **Navegación fluida:** Botones de navegación esenciales (Atrás, Adelante, Recargar) y barra de direcciones inteligente.
-* 🛸 **Identidad propia:** Icono personalizado tecnológico en forma de átomo azul orbital.
+## 🎨 Características de la versión Demo
+* 🏎️ **Ultra ligero:** Interfaz minimalista optimizada para consumir el mínimo de recursos.
+* 🏠 **Inicio Estable:** Carga directamente la página principal de Google al arrancar.
+* 🔍 **Buscador Inteligente:** Detecta automáticamente si escribiste una URL (ej. `youtube.com`) o palabras sueltas para redirigirte a Google Search de forma limpia.
+* 🛸 **Identidad Visual:** Incluye los recursos visuales nativos (formato `.png` y `.ico`) con el diseño de átomo orbital azul.
 
 ---
 
-## 📦 Estructura del Proyecto
+## 📦 Estructura actual del repositorio
 
-El repositorio está organizado de la siguiente manera:
-* `/.pythons`: Código fuente original escrito en Python.
-* `/bats`: Scripts de acceso rápido automatizados para Windows.
-* `/icon`: Recursos visuales del navegador (formatos `.png` y `.ico`).
-* `/exe`: La versión final compilada e independiente de Chronioñ listísima para usar.
-
----
-
-## 🚀 Cómo usar Chronioñ
-
-### Opción A: Solo quiero usar el navegador (Para usuarios)
-1. Entra a la carpeta `/exe`.
-2. Descarga el archivo `Chronioñ.exe`.
-3. ¡Haz doble clic en tu escritorio y a navegar!
-*(Nota: Al ser un ejecutable nuevo y personal, tu antivirus o Windows SmartScreen podría lanzar una advertencia flotante. Solo debes darle a "Ejecutar de todas formas" o añadir la exclusión en tu antivirus).*
-
-### Opción B: Quiero ver o modificar el código (Para programadores)
-Si quieres probar el código fuente, necesitas tener instalado Python 3.11+. Sigue estos comandos en tu consola:
-
-1. Instala las dependencias necesarias:
-   ```bash
-   pip install PyQt5 PyQtWebEngine Pillow
-   ```
-2. Ejecuta el archivo de la carpeta de scripts:
-   ```bash
-   python .pythons/navegador.py
-   ```
+El proyecto está organizado de la siguiente manera de forma pública:
+* 📁 **`chronioñ demo/`**
+  * 📄 `navegador.py` -> Código fuente principal corregido de la Demo.
+  * ⚙️ `Chronion.bat` -> Script de arranque rápido para Windows.
+  * 🖼️ `icon.png` e `icon.ico` -> Logotipos oficiales en alta resolución.
+* 📜 **`README.md`** -> Guía de presentación del proyecto.
 
 ---
 
-## 🛠️ Tecnologías utilizadas
-* **Python 3.11** - Lenguaje base del proyecto.
-* **PyQt5 & PyQtWebEngine** - Interfaz gráfica y motor del navegador.
-* **PyInstaller** - Compilador para empaquetar el código en un ejecutable único.
-* **Pillow** - Procesador de imágenes para la creación del icono nativo.
+## 🛠️ Cómo descargar y ejecutar la Demo
+
+⚠️ **Nota Importante:** Para que el archivo ejecutable `.bat` funcione, es obligatorio que se descargue la carpeta completa o que mantengas los archivos `Chronion.bat` y `navegador.py` juntos en el mismo directorio.
+
+### Paso 1: Clonar o descargar el proyecto
+Puedes descargar el repositorio completo en formato `.ZIP` desde el botón verde **Code** de arriba y descomprimirlo en tu computadora.
+
+### Paso 2: Instalar los requisitos básicos
+Para que el motor gráfico de Chromium y las librerías de Python funcionen en tu PC, abre tu consola (CMD) e instala lo siguiente:
+```bash
+pip install PyQt5 PyQtWebEngine
+```
+
+### Paso 3: ¡A navegar!
+Entra en la carpeta `chronioñ demo` y haz doble clic sobre el archivo **`Chronion.bat`**. Se abrirá el navegador Chronioñ de forma inmediata y automática sin dejar consolas negras de fondo.
+
+---
+## 💻 Tecnologías utilizadas
+* **Python 3.11** - Lenguaje de programación base.
+* **PyQt5 & PyQtWebEngine** - Interfaz de usuario y motor de renderizado web (Blink/Chromium).
 
 ---
 Creado con 💻 por **Anyeloxp**
