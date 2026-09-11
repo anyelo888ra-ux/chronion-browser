@@ -17,7 +17,7 @@ jobs:
         $xml = @"
         <?xml version='1.0' encoding='utf-8'?>
         <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-          <Product Name='Chronioñ Browser' Id='*' UpgradeCode='B5A10A3E-1234-4061-A87A-D52206B1AB64' Language='1033' Version='1.2.0' Manufacturer='Anyelo' Codepage='65001'>
+          <Product Name='Chronioñ Browser' Id='*' UpgradeCode='B5A10A3E-1234-4061-A87A-D52206B1AB64' Language='1033' Version='1.2.0' Manufacturer='Anyelo'>
             <Package Id='*' InstallerVersion='200' Compressed='yes' InstallScope='perMachine' Description='Instalador de Chronion Browser v1.2' />
             <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
             
@@ -26,8 +26,8 @@ jobs:
                 <Directory Id='INSTALLDIR' Name='ChronionBrowser'>
                   <Component Id='MainExecutable' Guid='B5A10A3E-5678-4061-A87A-D52206B1AB64'>
                     <File Id='ChronionEXE' Name='Chronion.v1.2.exe' Source='Chronion.v1.2.exe' KeyPath='yes'>
-                      <Shortcut Id='DesktopShortcut' Directory='DesktopFolder' Name='Chronioñ Browser' WorkingDirectory='INSTALLDIR' Advertise='yes' Icon='ChronionEXE' />
-                      <Shortcut Id='ProgramMenuShortcut' Directory='ProgramMenuFolder' Name='Chronioñ Browser' WorkingDirectory='INSTALLDIR' Advertise='yes' Icon='ChronionEXE' />
+                      <Shortcut Id='DesktopShortcut' Directory='DesktopFolder' Name='Chronioñ Browser' WorkingDirectory='INSTALLDIR' Advertise='yes' />
+                      <Shortcut Id='ProgramMenuShortcut' Directory='ProgramMenuFolder' Name='Chronioñ Browser' WorkingDirectory='INSTALLDIR' Advertise='yes' />
                     </File>
                   </Component>
                 </Directory>
@@ -40,7 +40,6 @@ jobs:
               <ComponentRef Id='MainExecutable' />
             </Feature>
             
-            <Icon Id='ChronionEXE' SourceFile='Chronion.v1.2.exe'/>
           </Product>
         </Wix>
         "@
