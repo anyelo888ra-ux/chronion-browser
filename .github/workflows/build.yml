@@ -33,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Chronion-v1.2-Windows
-        path: dist/ChronionBrowser/
+        path: dist/Chronion v1.2/
