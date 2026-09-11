@@ -1,12 +1,14 @@
 import sys
 import sqlite3
 import re
-import os  # <-- Importante para manejar las rutas de guardado
-from PyQt5.QtCore import QUrl
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QToolBar, QAction, 
+import os
+from PyQt6.QtCore import QUrl
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QToolBar,
                              QLineEdit, QDialog, QVBoxLayout, QLabel, 
                              QPushButton, QHBoxLayout, QMessageBox, QFileDialog)
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile # <-- Añadimos Profile
+from PyQt6.QtGui import QAction
+from PyQt6.QtWebEngineCore import QWebEngineProfile
+from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 # --- 1. BASE DE DATOS LOCAL PARA CUENTAS DE CHRONIOÑ ---
 def InicializarBaseDatos():
@@ -59,7 +61,7 @@ class VentanaLogin(QDialog):
         
         self.txt_clave = QLineEdit()
         self.txt_clave.setPlaceholderText("Contraseña")
-        self.txt_clave.setEchoMode(QLineEdit.Password)
+        self.txt_clave.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addWidget(self.txt_clave)
         
         btn_layout = QHBoxLayout()
@@ -137,7 +139,8 @@ class ChronioñCompleto(QMainWindow):
         perfil = QWebEngineProfile.defaultProfile()
         perfil.downloadRequested.connect(self.gestionar_descarga)
 
-        self.url_inicio = "https://google.com"
+        # 🌐 --- MOTOR DE BÚSQUEDA Y PÁGINA DE INICIO OFICIAL CHRONIOÑ ---
+        self.url_inicio = "https://chronion-search.duckdns.org/"
         self.browser.setUrl(QUrl(self.url_inicio))
 
         # --- BARRA DE HERRAMIENTAS MODO OSCURO ---
@@ -182,28 +185,26 @@ class ChronioñCompleto(QMainWindow):
 
     # 📥 --- FUNCIÓN PARA DETECTAR Y EJECUTAR DESCARGAS ---
     def gestionar_descarga(self, item):
-        # Sugiere el nombre original del archivo que vas a bajar
         nombre_archivo = item.suggestedFileName()
-        
-        # Ruta por defecto: carpeta de Descargas del usuario de Windows
         ruta_descargas = os.path.join(os.path.expanduser("~"), "Downloads")
         ruta_completa = os.path.join(ruta_descargas, nombre_archivo)
         
-        # Abre la ventana clásica de Windows para confirmar dónde guardarlo
         ruta_guardado, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", ruta_completa)
         
         if ruta_guardado:
-            item.setPath(ruta_guardado)
-            item.accept() # Inicia la descarga real
+            item.setDownloadDirectory(os.path.dirname(ruta_guardado))
+            item.setDownloadFileName(os.path.basename(ruta_guardado))
+            item.accept()
             QMessageBox.information(self, "Descarga Iniciada", f"Descargando:\n{nombre_archivo}\n\nRevisa tu carpeta de Descargas.")
 
+    # 🔍 --- NAVEGACIÓN CON MOTOR CHRONIOÑ ---
     def navegar_a_url(self):
         url_texto = self.barra_url.text().strip()
         if not url_texto:
             return
             
         if " " in url_texto or "." not in url_texto:
-            url_texto = "https://google.com/search?q=" + url_texto.replace(" ", "+")
+            url_texto = "https://chronion-search.duckdns.org/search.html?q=" + url_texto.replace(" ", "+")
         else:
             if not url_texto.startswith("http://") and not url_texto.startswith("https://"):
                 url_texto = "https://" + url_texto
@@ -218,7 +219,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     
     login = VentanaLogin()
-    if login.exec_() == QDialog.Accepted:
+    if login.exec() == QDialog.DialogCode.Accepted:
         mi_navegador = ChronioñCompleto(login.usuario_actual, login.email_actual)
         mi_navegador.show()
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
