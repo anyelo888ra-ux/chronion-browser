@@ -12,13 +12,13 @@ jobs:
       run: |
         Invoke-WebRequest -Uri "https://github.com/anyelo888ra-ux/chronion-browser/releases/download/v1.2/Chronion.v1.2.exe" -OutFile "Chronion.v1.2.exe"
 
-    - name: Generar código fuente del instalador (WiX con UTF-8)
+    - name: Generar código fuente del instalador (WiX)
       run: |
         $xml = @"
         <?xml version='1.0' encoding='utf-8'?>
         <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
           <Product Name='Chronioñ Browser' Id='*' UpgradeCode='B5A10A3E-1234-4061-A87A-D52206B1AB64' Language='1033' Version='1.2.0' Manufacturer='Anyelo' Codepage='65001'>
-            <Package Id='*' InstallerVersion='200' Compressed='yes' InstallScope='perMachine' Description='Instalador de Chronioñ Browser v1.2' Codepage='65001' />
+            <Package Id='*' InstallerVersion='200' Compressed='yes' InstallScope='perMachine' Description='Instalador de Chronion Browser v1.2' />
             <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
             
             <Directory Id='TARGETDIR' Name='SourceDir'>
@@ -44,11 +44,11 @@ jobs:
           </Product>
         </Wix>
         "@
-        Out-File -FilePath installer.wxs -InputObject $xml -Encoding UTF8
+        [System.IO.File]::WriteAllText("$PWD/installer.wxs", $xml, [System.Text.Encoding]::UTF8)
 
     - name: Compilar el instalador a formato MSI
       run: |
-        & "${env:WIX}\bin\candle.exe" -dCodepage=65001 installer.wxs
+        & "${env:WIX}\bin\candle.exe" installer.wxs
         & "${env:WIX}\bin\light.exe" installer.wixobj -o "Chronion-Browser-v1.2-Installer.msi" -spdb
 
     - name: Subir Instalador MSI como Artifact
