@@ -17,7 +17,7 @@ jobs:
         $xml = @"
         <?xml version='1.0' encoding='utf-8'?>
         <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-          <Product Name='Chronioñ Browser' Id='*' UpgradeCode='B5A10A3E-1234-4061-A87A-D52206B1AB64' Language='1033' Version='1.2.0' Manufacturer='Anyelo'>
+          <Product Name='Chronioñ Browser' Id='*' UpgradeCode='B5A10A3E-1234-4061-A87A-D52206B1AB64' Language='1033' Version='1.2.0' Manufacturer='Anyelo' Codepage='65001'>
             <Package Id='*' InstallerVersion='200' Compressed='yes' InstallScope='perMachine' Description='Instalador de Chronion Browser v1.2' />
             <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
             
@@ -25,19 +25,35 @@ jobs:
               <Directory Id='ProgramFilesFolder'>
                 <Directory Id='INSTALLDIR' Name='ChronionBrowser'>
                   <Component Id='MainExecutable' Guid='B5A10A3E-5678-4061-A87A-D52206B1AB64'>
-                    <File Id='ChronionEXE' Name='Chronion.v1.2.exe' Source='Chronion.v1.2.exe' KeyPath='yes'>
-                      <Shortcut Id='DesktopShortcut' Directory='DesktopFolder' Name='Chronioñ Browser' WorkingDirectory='INSTALLDIR' Advertise='yes' />
-                      <Shortcut Id='ProgramMenuShortcut' Directory='ProgramMenuFolder' Name='Chronioñ Browser' WorkingDirectory='INSTALLDIR' Advertise='yes' />
-                    </File>
+                    <File Id='ChronionEXE' Name='Chronion.v1.2.exe' Source='Chronion.v1.2.exe' KeyPath='yes' />
                   </Component>
                 </Directory>
               </Directory>
-              <Directory Id='DesktopFolder' Name='Desktop' />
-              <Directory Id='ProgramMenuFolder' Name='Programs' />
+              
+              <!-- Carpeta del Escritorio -->
+              <Directory Id='DesktopFolder' Name='Desktop'>
+                <Component Id='DesktopShortcutComponent' Guid='B5A10A3E-1111-4061-A87A-D52206B1AB64'>
+                  <Shortcut Id='DesktopShortcut' Name='Chronioñ Browser' Target='[INSTALLDIR]Chronion.v1.2.exe' WorkingDirectory='INSTALLDIR' />
+                  <RegistryValue Root='HKCU' Key='Software\ChronionBrowser' Name='DesktopShortcutInstalled' Type='integer' Value='1' KeyPath='yes' />
+                </Component>
+              </Directory>
+
+              <!-- Carpeta del Menú Inicio -->
+              <Directory Id='ProgramMenuFolder' Name='Programs'>
+                <Directory Id='ApplicationProgramsFolder' Name='Chronioñ Browser'>
+                  <Component Id='ApplicationShortcutComponent' Guid='B5A10A3E-2222-4061-A87A-D52206B1AB64'>
+                    <Shortcut Id='ProgramMenuShortcut' Name='Chronioñ Browser' Target='[INSTALLDIR]Chronion.v1.2.exe' WorkingDirectory='INSTALLDIR' />
+                    <RemoveFolder Id='CleanUpShortcuts' Directory='ApplicationProgramsFolder' On='uninstall' />
+                    <RegistryValue Root='HKCU' Key='Software\ChronionBrowser' Name='MenuShortcutInstalled' Type='integer' Value='1' KeyPath='yes' />
+                  </Component>
+                </Directory>
+              </Directory>
             </Directory>
             
             <Feature Id='ProductFeature' Title='Chronion Browser' Level='1'>
               <ComponentRef Id='MainExecutable' />
+              <ComponentRef Id='DesktopShortcutComponent' />
+              <ComponentRef Id='ApplicationShortcutComponent' />
             </Feature>
             
           </Product>
