@@ -24,13 +24,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install PyQt6 PyQt6-WebEngine pyinstaller
-
+        
     - name: Compilar ejecutable con PyInstaller
       run: |
-        pyinstaller --noconfirm --onedir --windowed --name "Chronioñ v1.2" navegador.py
-        
+        pyinstaller --noconfirm --onedir --windowed --noconsole --name "Chronioñ v1.2" navegador.py
+
     - name: Subir ejecutable como Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ChronionBrowser-Windows
+        name: Chronioñ-v1.2-Windows
         path: dist/ChronionBrowser/
