@@ -1,0 +1,73 @@
+name: Crear Instalador MSI de Chronioñ x86
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-msi-x86:
+    runs-on: windows-latest
+
+    steps:
+    - name: Descargar el ejecutable oficial x86 (Chronion.v1.2.x86.exe)
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/anyelo888ra-ux/chronion-browser/releases/download/v1.2/Chronion.v1.2.x86.exe" -OutFile "Chronion.v1.2.x86.exe"
+
+    - name: Generar código fuente del instalador WiX (x86)
+      run: |
+        $xml = @"
+        <?xml version='1.0' encoding='utf-8'?>
+        <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+          <Product Name='Chronioñ Browser (32-bit)' Id='*' UpgradeCode='C6B21B4F-5678-4061-B98B-E63317C2BC75' Language='1033' Version='1.2.0' Manufacturer='Anyelo' Codepage='65001'>
+            <Package Id='*' InstallerVersion='200' Compressed='yes' InstallScope='perMachine' Description='Instalador de Chronion Browser v1.2 (x86)' Platform='x86' />
+            <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
+            
+            <Directory Id='TARGETDIR' Name='SourceDir'>
+              <Directory Id='ProgramFilesFolder'>
+                <Directory Id='INSTALLDIR' Name='ChronionBrowser'>
+                  <Component Id='MainExecutable' Guid='C6B21B4F-9012-4061-B98B-E63317C2BC75'>
+                    <File Id='ChronionEXE' Name='Chronion.v1.2.x86.exe' Source='Chronion.v1.2.x86.exe' KeyPath='yes' />
+                  </Component>
+                </Directory>
+              </Directory>
+              
+              <!-- Carpeta del Escritorio -->
+              <Directory Id='DesktopFolder' Name='Desktop'>
+                <Component Id='DesktopShortcutComponent' Guid='C6B21B4F-3333-4061-B98B-E63317C2BC75'>
+                  <Shortcut Id='DesktopShortcut' Name='Chronioñ Browser (x86)' Target='[INSTALLDIR]Chronion.v1.2.x86.exe' WorkingDirectory='INSTALLDIR' />
+                  <RegistryValue Root='HKCU' Key='Software\ChronionBrowserX86' Name='DesktopShortcutInstalled' Type='integer' Value='1' KeyPath='yes' />
+                </Component>
+              </Directory>
+
+              <!-- Carpeta del Menú Inicio -->
+              <Directory Id='ProgramMenuFolder' Name='Programs'>
+                <Directory Id='ApplicationProgramsFolder' Name='Chronioñ Browser'>
+                  <Component Id='ApplicationShortcutComponent' Guid='C6B21B4F-4444-4061-B98B-E63317C2BC75'>
+                    <Shortcut Id='ProgramMenuShortcut' Name='Chronioñ Browser (x86)' Target='[INSTALLDIR]Chronion.v1.2.x86.exe' WorkingDirectory='INSTALLDIR' />
+                    <RemoveFolder Id='CleanUpShortcuts' Directory='ApplicationProgramsFolder' On='uninstall' />
+                    <RegistryValue Root='HKCU' Key='Software\ChronionBrowserX86' Name='MenuShortcutInstalled' Type='integer' Value='1' KeyPath='yes' />
+                  </Component>
+                </Directory>
+              </Directory>
+            </Directory>
+            
+            <Feature Id='ProductFeature' Title='Chronion Browser x86' Level='1'>
+              <ComponentRef Id='MainExecutable' />
+              <ComponentRef Id='DesktopShortcutComponent' />
+              <ComponentRef Id='ApplicationShortcutComponent' />
+            </Feature>
+            
+          </Product>
+        </Wix>
+        "@
+        [System.IO.File]::WriteAllText("$PWD/installer_x86.wxs", $xml, [System.Text.Encoding]::UTF8)
+
+    - name: Compilar el instalador x86 a formato MSI
+      run: |
+        & "${env:WIX}\bin\candle.exe" -arch x86 installer_x86.wxs
+        & "${env:WIX}\bin\light.exe" installer_x86.wixobj -o "Chronion-Browser-v1.2-Installer-x86.msi" -spdb
+
+    - name: Subir Instalador MSI x86 como Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: chronion-msi-installer-x86
+        path: Chronion-Browser-v1.2-Installer-x86.msi
