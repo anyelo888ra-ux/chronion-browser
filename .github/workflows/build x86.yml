@@ -28,10 +28,10 @@ jobs:
 
     - name: Compilar ejecutable x86 con PyInstaller
       run: |
-        pyinstaller --noconfirm --onefile --windowed --noconsole --icon="icon.ico" --name "Chronion v1.2 x86" "navegador x86.py"
+        pyinstaller --noconfirm --onefile --windowed --noconsole --icon="icon.ico" --name "Chronion v1.3 x86" "navegador x86.py"
 
     - name: Subir ejecutable como Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Chronion-v1.2-Windows-x86
+        name: Chronion-v1.3-Windows-x86
         path: dist/Chronion v1.2 x86.exe
