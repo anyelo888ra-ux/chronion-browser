@@ -122,13 +122,99 @@ class VentanaLogin(QDialog):
         except sqlite3.IntegrityError:
             QMessageBox.warning(self, "Error", "El nombre de usuario ya está registrado.")
 
-# --- 3. VENTANA PRINCIPAL DEL NAVEGADOR ---
+# --- 3. HTML INTERNO PARA PÁGINAS ESPECIALES CHRONION:// Y CHRONIOÑ:// ---
+PAGINAS_INTERNAS = {
+    "about": """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Acerca de Chronioñ</title>
+            <style>
+                body { background-color: #121212; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+                .card { background: #1e1e24; padding: 40px; border-radius: 16px; border: 1px solid #2d2d38; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+                h1 { color: #00d2ff; margin-bottom: 5px; }
+                p { color: #94a3b8; font-size: 0.95rem; line-height: 1.6; }
+                .badge { background: #00d2ff; color: #121212; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
+                .info-box { background: #141419; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left; font-family: monospace; font-size: 0.85rem; color: #38bdf8; }
+            </style>
+        </head>
+        <body>
+            <div class="card">
+                <h1>🛸 Chronioñ Browser</h1>
+                <p><span class="badge">v1.3 Multi-Lang</span></p>
+                <p>Navegador web ultra ligero, minimalista y seguro optimizado con PyQt y motor Chromium.</p>
+                <div class="info-box">
+                    • Motor: Blink / WebEngine<br>
+                    • ID & Accounts: Integrado (@chronion.com)<br>
+                    • Esquemas soportados: chronion:// y chronioñ://<br>
+                    • Desarrollador: Anyeloxp / anyelo888ra-ux
+                </div>
+            </div>
+        </body>
+        </html>
+    """,
+    "version": """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Versión de Chronioñ</title>
+            <style>
+                body { background-color: #121212; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; padding: 40px; }
+                h2 { color: #00d2ff; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                td, th { border-bottom: 1px solid #2d2d38; padding: 12px; text-align: left; }
+                th { color: #94a3b8; }
+            </style>
+        </head>
+        <body>
+            <h2>Información de Versión - Chronioñ Browser</h2>
+            <table>
+                <tr><th>Componente</th><th>Detalle</th></tr>
+                <tr><td>Navegador</td><td>Chronioñ Browser v1.3</td></tr>
+                <tr><td>Motor Web</td><td>PyQtWebEngine (Chromium Core)</td></tr>
+                <tr><td>Base de Datos</td><td>SQLite3 (chronion_data.db)</td></tr>
+                <tr><td>Protocolos Internos</td><td>chronion://, chronioñ://, about:chronion, about:chronioñ</td></tr>
+            </table>
+        </body>
+        </html>
+    """,
+    "flags": """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Configuración Experimental</title>
+            <style>
+                body { background-color: #121212; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; padding: 40px; }
+                h2 { color: #00d2ff; }
+                .flag { background: #1e1e24; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #2d2d38; }
+                .flag-title { color: #38bdf8; font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <h2>⚙️ Chronioñ Flags & Experimentos</h2>
+            <div class="flag">
+                <span class="flag-title">#enable-hardware-acceleration</span>
+                <p>Aceleración por GPU para la renderización de páginas WebGL.</p>
+            </div>
+            <div class="flag">
+                <span class="flag-title">#chronion-id-sync</span>
+                <p>Sincronización automática de perfil de usuario local @chronion.com.</p>
+            </div>
+        </body>
+        </html>
+    """
+}
+
+# --- 4. VENTANA PRINCIPAL DEL NAVEGADOR ---
 class ChronioñCompleto(QMainWindow):
     def __init__(self, usuario, email):
         super().__init__()
         self.usuario_sesion = usuario
         self.email_sesion = email
-        self.setWindowTitle(f"Chronioñ Browser v1.2 - [{self.usuario_sesion}]")
+        self.setWindowTitle(f"Chronioñ Browser v1.3 - [{self.usuario_sesion}]")
         self.setGeometry(100, 100, 1024, 768)
         self.setStyleSheet("QMainWindow { background-color: #121212; }")
 
@@ -197,12 +283,25 @@ class ChronioñCompleto(QMainWindow):
             item.accept()
             QMessageBox.information(self, "Descarga Iniciada", f"Descargando:\n{nombre_archivo}\n\nRevisa tu carpeta de Descargas.")
 
-    # 🔍 --- NAVEGACIÓN CON MOTOR CHRONIOÑ ---
+    # 🔍 --- NAVEGACIÓN CON SOPORTE INTERNO PARA CHRONION:// Y CHRONIOÑ:// ---
     def navegar_a_url(self):
         url_texto = self.barra_url.text().strip()
         if not url_texto:
             return
-            
+
+        # Detección de esquema de URL interna (chronion://, chronioñ://, about:chronion, etc.)
+        pattern_internal = r'^(chronion|chronioñ|about)[:/]+([a-zA-Z0-9_-]+)$'
+        match = re.match(pattern_internal, url_texto.lower())
+        
+        if match:
+            pagina = match.group(2)
+            if pagina in PAGINAS_INTERNAS:
+                self.browser.setHtml(PAGINAS_INTERNAS[pagina])
+                return
+            else:
+                self.browser.setHtml(f"<body style='background:#121212;color:white;font-family:sans-serif;'><h2>404 - Página Interna chronion://{pagina} no encontrada</h2></body>")
+                return
+
         if " " in url_texto or "." not in url_texto:
             url_texto = "https://chronion-search.duckdns.org/search.html?q=" + url_texto.replace(" ", "+")
         else:
